@@ -48,7 +48,7 @@ case "$cmd" in
     head "solana-indexer — standalone installer"
     cat <<EOF
 
-Curated one-liner:
+Install:
 
   curl -fsSL ${REPO_RAW}/install.sh | bash
 

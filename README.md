@@ -30,15 +30,13 @@ A Claude Code / Codex skill for [Solana](https://solana.com) builders. Fills a g
 
 ## Install
 
-The curated one-liner — share this:
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/install.sh | bash
 ```
 
-That downloads the skill as a tarball and copies it into
-`~/.claude/skills/solana-indexer/` (and `~/.codex/skills/solana-indexer/`
-if Codex is detected). Restart Claude Code or Codex to pick it up.
+Installs to `~/.claude/skills/solana-indexer/` and
+`~/.codex/skills/solana-indexer/` (if Codex is installed). Restart
+Claude Code or Codex.
 
 ## What this skill does
 
@@ -72,13 +70,13 @@ lets Claude design, build, test, and operate them.
 
 ## Quick start
 
-After install, in Claude Code:
+In Claude Code:
 
 ```
 /build-indexer "index Raydium CLMM swaps and positions on mainnet"
 ```
 
-Or just ask naturally:
+Or just talk to it:
 
 ```
 "Help me set up a Geyser gRPC plugin to index Magic Eden listings."
@@ -266,7 +264,5 @@ ecosystem.
 
 ---
 
-<sub>Built by [@srivtx](https://github.com/srivtx) · Submission to the
-[Superteam Earn "Ship useful agent skills we can add to Solana AI Kit"
-bounty](https://superteam.fun/earn/listing/ship-useful-agent-skills-we-can-add-to-solana-ai-kit)
-· Part of the [Solana AI Kit](https://github.com/solanabr/solana-ai-kit) ecosystem</sub>
+<sub>Built by [@srivtx](https://github.com/srivtx) · Part of the
+[Solana AI Kit](https://github.com/solanabr/solana-ai-kit) ecosystem</sub>

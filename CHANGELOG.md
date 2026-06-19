@@ -46,10 +46,5 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `assets/indexer.webp` — banner (transparent background, blends with GitHub)
 - `.github/workflows/validate.yml` — 6-job CI
 
-### Submission
-- Initial release submitted to the Superteam Earn bounty:
-  [Ship useful agent skills we can add to Solana AI Kit](https://superteam.fun/earn/listing/ship-useful-agent-skills-we-can-add-to-solana-ai-kit)
-  (3,000 USDG total prize pool, July 8 2026 deadline)
-
 [Unreleased]: https://github.com/srivtx/solana-indexer-skill/compare/main...HEAD
 [0.1.0]: https://github.com/srivtx/solana-indexer-skill/releases/tag/v0.1.0
