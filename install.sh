@@ -52,6 +52,14 @@ Install:
 
   curl -fsSL ${REPO_RAW}/install.sh | bash
 
+Or from a clone:
+
+  git clone https://github.com/srivtx/solana-indexer-skill.git
+  cd solana-indexer-skill
+  ./install.sh
+
+Or manual copy (see README "Manual copy" section).
+
 That copies the skill into:
   - \${CLAUDE_SKILLS_HOME:-~/.claude/skills}/solana-indexer/
   - \${CODEX_SKILLS_HOME:-~/.codex/skills}/solana-indexer/   (if codex is installed)

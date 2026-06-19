@@ -30,6 +30,8 @@ A Claude Code / Codex skill for [Solana](https://solana.com) builders. Fills a g
 
 ## Install
 
+### One-liner (recommended)
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/install.sh | bash
 ```
@@ -37,6 +39,45 @@ curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/in
 Installs to `~/.claude/skills/solana-indexer/` and
 `~/.codex/skills/solana-indexer/` (if Codex is installed). Restart
 Claude Code or Codex.
+
+### From a clone (if you want to inspect first or the one-liner is blocked)
+
+```bash
+git clone https://github.com/srivtx/solana-indexer-skill.git
+cd solana-indexer-skill
+./install.sh
+```
+
+### Manual copy (no install script, full control)
+
+```bash
+git clone https://github.com/srivtx/solana-indexer-skill.git
+
+# Claude Code
+mkdir -p ~/.claude/skills/solana-indexer
+cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
+      solana-indexer-skill/commands solana-indexer-skill/rules \
+      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
+      ~/.claude/skills/solana-indexer/
+
+# Codex (only if you use it)
+mkdir -p ~/.codex/skills/solana-indexer
+cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
+      solana-indexer-skill/commands solana-indexer-skill/rules \
+      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
+      ~/.codex/skills/solana-indexer/
+```
+
+### Project-local install (install into `./.claude/skills/` of a project)
+
+```bash
+git clone https://github.com/srivtx/solana-indexer-skill.git
+cd solana-indexer-skill
+CLAUDE_SKILLS_HOME=./.claude ./install.sh
+```
+
+This is useful when you want the skill to travel with a specific
+repo (`.claude/skills/solana-indexer/` gets committed to that repo).
 
 ## What this skill does
 
