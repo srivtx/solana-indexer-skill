@@ -95,7 +95,7 @@ You describe a Solana dApp. The skill routes you to the right approach:
 | "Run in production" | `skill/references/production-ops.md` |
 | "Where are the official docs" | `skill/references/resources.md` |
 
-## Why this exists
+## Why this is needed
 
 The Solana AI Kit ecosystem has hundreds of skills — Helius, QuickNode,
 light-protocol, vulnhunter, code-recon, solana-agent-kit, Token Extensions,
@@ -106,8 +106,49 @@ The kit's `backend-async.md` has one 20-line polling pattern. Solana-agent-kit
 has 60+ actions for using data, not building pipelines for it.
 
 Indexers are the backbone of every serious Solana dApp — DeFi dashboards,
-NFT marketplaces, gaming leaderboards, social graphs, analytics. This skill
-lets Claude design, build, test, and operate them.
+NFT marketplaces, gaming leaderboards, social graphs, analytics. Every
+founder building a "real" Solana product eventually needs one. Without a
+custom indexer, you're stuck polling RPC every N seconds, which is
+expensive, slow, and rate-limited.
+
+## How this skill helps
+
+When you ask Claude to build, debug, or operate a Solana indexer, this
+skill gives it the right answer instead of having to figure it out from
+scratch:
+
+- **Pick the right ingestion method** — Helius enhanced WebSocket,
+  Yellowstone gRPC, account subscriptions, polling, or The Graph
+  subgraph. Each has different cost/latency/durability tradeoffs.
+  The `indexer-architecture.md` reference is a decision tree that
+  picks the right one for your dApp.
+- **Design a Postgres schema that doesn't break** — Solana account
+  layouts have edge cases (u128 fields, Option discriminators, Vec
+  lengths, PDA derivation). The `postgres-schemas.md` reference
+  shows the exact `NUMERIC(40, 0)` for u128, the `BYTEA(32)` for
+  Pubkey, the dedup key as `(slot, signature)` for events and
+  `(pubkey, slot)` for account updates. Verified against Raydium
+  CLMM's actual `PoolState` struct from the program source.
+- **Backfill historical data without getting rate-limited** — naive
+  backfills hit RPC rate limits and run for days. The
+  `backfill-strategies.md` reference has 5 strategies with
+  checkpointing and parallelism, so a 90-day backfill that would
+  take 7 days polling finishes in 6 hours.
+- **Keep RPC costs down** — Helius Developer is $49/mo, Business
+  is $249/mo, Professional is $999/mo. The `cost-optimization.md`
+  reference has a tier-by-tier breakdown plus 7 techniques to
+  reduce credits (filter `vote: false, failed: false`, dedup at
+  the Geyser layer not the DB layer, batch Postgres writes, etc).
+- **Test before you ship** — `liteSVM` for unit, `Surfpool` for
+  integration with a mainnet fork, golden tests for replay
+  safety, chaos tests for when the RPC goes down at 3am.
+- **Operate in production** — slot-lag SLOs, Prometheus metrics,
+  PagerDuty alerts, on-call playbooks for the 5 things that
+  actually break (slot lag spike, Postgres WAL full, RPC auth
+  rotated, Geyser plugin crash, Yellowstone provider outage).
+
+Without this skill, every founder has to rediscover all of this.
+With it, Claude gets it right on the first try.
 
 ## Quick start
 
@@ -291,13 +332,51 @@ above cover the *consuming* side.
 - **Auditing an existing indexer** → `ext/trailofbits` (security) or `ext/safe-solana-builder` (audit-derived rules)
 - **One-off RPC queries** → just call the RPC directly, no need for an indexer
 
+## Extends the Solana AI Kit ecosystem
+
+This skill extends the
+[Solana AI Kit](https://github.com/solanabr/solana-ai-kit) by filling a
+gap nobody in the ecosystem is properly covering — *how to build* a
+Solana indexer. The kit ships Helius, QuickNode, light-protocol,
+solana-agent-kit, Jupiter, Metaplex, Anchor, Pinocchio, Token
+Extensions, security skills, infra skills, GTM skills. This is the
+indexer-builder skill that completes the picture.
+
+The skill follows the kit's exact shape (`skill/` + `agents/` +
+`commands/` + `rules/` + `install.sh` + MIT LICENSE) so it can be
+added to `ext/solana-indexer` of the kit with no restructuring.
+
 ## Part of solana-superchargers
 
-This skill is also available through the
-[solana-superchargers](https://github.com/srivtx/solana-superchargers)
-multi-skill marketplace — a curated set of Solana skills that complement
-and extend the [Solana AI Kit](https://github.com/solanabr/solana-ai-kit)
-ecosystem.
+This is the first skill in
+[solana-superchargers](https://github.com/srivtx/solana-superchargers),
+a multi-skill marketplace that extends the Solana AI Kit. The
+marketplace ships a shared installer (`./install.sh add <skill>`) and
+planned skills across 13 categories:
+
+- **Indexers** — `solana-indexer` (this one)
+- **Observability** — `solana-observability-skill` (planned)
+- **MEV** — `solana-mev-skill` (planned: Jito bundles, MEV protection)
+- **Program upgrades** — `solana-upgrade-skill` (planned: data
+  migrations, schema changes, feature flags)
+- **E2E testing** — `solana-e2e-skill` (planned: Playwright + wallet,
+  Surfpool fork)
+- **Wallet UX** — `solana-wallet-ux-skill` (planned: signing UX, error
+  states, multi-wallet patterns)
+- **And 7 more** across DeFi depth, NFT indexing, GTM, security
+  audit, infra, dev tools, and analytics
+
+`solana-indexer` is the only fully-shipped skill today — the rest are
+in the roadmap. Install just this one with the one-liner above, or
+grab the marketplace and pick a subset:
+
+```bash
+git clone https://github.com/srivtx/solana-superchargers.git
+cd solana-superchargers
+./install.sh add solana-indexer
+# or
+./install.sh add all
+```
 
 ## License
 
