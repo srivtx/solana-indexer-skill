@@ -45,11 +45,13 @@ cd solana-indexer-skill
 ./install.sh
 ```
 
-For a project-local install (commits the skill into a specific repo):
+For a project-local install (skill lives in a specific repo instead of your home dir):
 
 ```bash
 CLAUDE_SKILLS_HOME=./.claude ./install.sh
 ```
+
+`CLAUDE_SKILLS_HOME` overrides the default `~/.claude/skills/` with the path you give it. `./.claude` resolves to a `solana-indexer/` subdirectory inside the current directory — so the skill gets installed to `./.claude/skills/solana-indexer/`. You'd then `git add` and commit that path yourself.
 
 ## What this skill does
 
