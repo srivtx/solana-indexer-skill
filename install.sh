@@ -15,7 +15,7 @@
 #   ./install.sh help       # show this message
 #
 
-set -euo pipefail
+set -eo pipefail
 SKILL_NAME="solana-indexer"
 REPO_RAW="https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main"
 REPO_TARBALL="https://codeload.github.com/srivtx/solana-indexer-skill/tar.gz/refs/heads/main"
@@ -29,8 +29,10 @@ warn() { printf "  \033[33m!\033[0m %s\n" "$*"; }
 err()  { printf "  \033[31m✗\033[0m %s\n" "$*" >&2; }
 head() { printf "\n\033[1m\033[36m── %s ──\033[0m\n" "$*"; }
 
+# SCRIPT_DIR is set when invoked as `./install.sh`. When piped from curl,
+# BASH_SOURCE[0] is unset (the script is read from stdin) — fall back to "".
 SCRIPT_DIR=""
-if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+if [[ "${BASH_SOURCE[0]+x}" == "x" ]]; then
   SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 fi
 inside_repo=false
