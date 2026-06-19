@@ -62,7 +62,10 @@ jobs:
               (echo "missing: $f" && exit 1)
           done
       - name: Validate manifest YAML
-        run: python3 -c "import yaml; yaml.safe_load(open('skill/examples/subgraph-template/subgraph.yaml'))"
+        run: |
+          pip install pyyaml --quiet
+          python3 -c "import yaml; yaml.safe_load(open('skill/examples/subgraph-template/subgraph.yaml'))"
+          echo "subgraph.yaml parses"
       - name: Validate GraphQL schema
         run: |
           python3 -c "
