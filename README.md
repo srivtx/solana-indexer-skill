@@ -45,6 +45,26 @@ cd solana-indexer-skill
 ./install.sh
 ```
 
+For a manual copy (no install script, full control):
+
+```bash
+git clone https://github.com/srivtx/solana-indexer-skill.git
+
+# Claude Code
+mkdir -p ~/.claude/skills/solana-indexer
+cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
+      solana-indexer-skill/commands solana-indexer-skill/rules \
+      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
+      ~/.claude/skills/solana-indexer/
+
+# Codex (only if you use it)
+mkdir -p ~/.codex/skills/solana-indexer
+cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
+      solana-indexer-skill/commands solana-indexer-skill/rules \
+      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
+      ~/.codex/skills/solana-indexer/
+```
+
 For a project-local install (skill lives in a specific repo instead of your home dir):
 
 ```bash
