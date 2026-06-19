@@ -30,17 +30,14 @@ A Claude Code / Codex skill for [Solana](https://solana.com) builders. Fills a g
 
 ## Install
 
-### One-liner (recommended)
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/install.sh | bash
 ```
 
-Installs to `~/.claude/skills/solana-indexer/` and
-`~/.codex/skills/solana-indexer/` (if Codex is installed). Restart
-Claude Code or Codex.
+Installs to `~/.claude/skills/solana-indexer/` (and `~/.codex/skills/solana-indexer/`
+if Codex is installed). Restart Claude Code or Codex.
 
-### From a clone (if you want to inspect first or the one-liner is blocked)
+For a clone + manual install:
 
 ```bash
 git clone https://github.com/srivtx/solana-indexer-skill.git
@@ -48,36 +45,11 @@ cd solana-indexer-skill
 ./install.sh
 ```
 
-### Manual copy (no install script, full control)
+For a project-local install (commits the skill into a specific repo):
 
 ```bash
-git clone https://github.com/srivtx/solana-indexer-skill.git
-
-# Claude Code
-mkdir -p ~/.claude/skills/solana-indexer
-cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
-      solana-indexer-skill/commands solana-indexer-skill/rules \
-      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
-      ~/.claude/skills/solana-indexer/
-
-# Codex (only if you use it)
-mkdir -p ~/.codex/skills/solana-indexer
-cp -R solana-indexer-skill/skill solana-indexer-skill/agents \
-      solana-indexer-skill/commands solana-indexer-skill/rules \
-      solana-indexer-skill/assets solana-indexer-skill/CLAUDE.md \
-      ~/.codex/skills/solana-indexer/
-```
-
-### Project-local install (install into `./.claude/skills/` of a project)
-
-```bash
-git clone https://github.com/srivtx/solana-indexer-skill.git
-cd solana-indexer-skill
 CLAUDE_SKILLS_HOME=./.claude ./install.sh
 ```
-
-This is useful when you want the skill to travel with a specific
-repo (`.claude/skills/solana-indexer/` gets committed to that repo).
 
 ## What this skill does
 
@@ -113,42 +85,23 @@ expensive, slow, and rate-limited.
 
 ## How this skill helps
 
-When you ask Claude to build, debug, or operate a Solana indexer, this
-skill gives it the right answer instead of having to figure it out from
-scratch:
+Without this skill, every founder has to rediscover the same patterns.
+With it, Claude gets them right on the first try:
 
-- **Pick the right ingestion method** — Helius enhanced WebSocket,
-  Yellowstone gRPC, account subscriptions, polling, or The Graph
-  subgraph. Each has different cost/latency/durability tradeoffs.
-  The `indexer-architecture.md` reference is a decision tree that
-  picks the right one for your dApp.
-- **Design a Postgres schema that doesn't break** — Solana account
-  layouts have edge cases (u128 fields, Option discriminators, Vec
-  lengths, PDA derivation). The `postgres-schemas.md` reference
-  shows the exact `NUMERIC(40, 0)` for u128, the `BYTEA(32)` for
-  Pubkey, the dedup key as `(slot, signature)` for events and
-  `(pubkey, slot)` for account updates. Verified against Raydium
-  CLMM's actual `PoolState` struct from the program source.
-- **Backfill historical data without getting rate-limited** — naive
-  backfills hit RPC rate limits and run for days. The
-  `backfill-strategies.md` reference has 5 strategies with
-  checkpointing and parallelism, so a 90-day backfill that would
-  take 7 days polling finishes in 6 hours.
-- **Keep RPC costs down** — Helius Developer is $49/mo, Business
-  is $249/mo, Professional is $999/mo. The `cost-optimization.md`
-  reference has a tier-by-tier breakdown plus 7 techniques to
-  reduce credits (filter `vote: false, failed: false`, dedup at
-  the Geyser layer not the DB layer, batch Postgres writes, etc).
-- **Test before you ship** — `liteSVM` for unit, `Surfpool` for
-  integration with a mainnet fork, golden tests for replay
-  safety, chaos tests for when the RPC goes down at 3am.
-- **Operate in production** — slot-lag SLOs, Prometheus metrics,
-  PagerDuty alerts, on-call playbooks for the 5 things that
-  actually break (slot lag spike, Postgres WAL full, RPC auth
-  rotated, Geyser plugin crash, Yellowstone provider outage).
-
-Without this skill, every founder has to rediscover all of this.
-With it, Claude gets it right on the first try.
+- **Picks the right ingestion method** — Helius WebSocket, Yellowstone
+  gRPC, account subs, polling, or subgraph. `indexer-architecture.md`
+  is the decision tree.
+- **Designs a Postgres schema that doesn't break** — `NUMERIC(40, 0)`
+  for u128, `BYTEA(32)` for Pubkey, `(slot, signature)` dedup.
+  Verified against Raydium CLMM's `PoolState` source.
+- **Backfills in hours, not days** — 5 strategies with checkpointing
+  + parallelism in `backfill-strategies.md`.
+- **Cuts RPC costs** — Helius tier breakdown ($49 / $249 / $999) plus
+  7 cost-reduction techniques in `cost-optimization.md`.
+- **Tests with LiteSVM + Surfpool + golden + chaos** —
+  `testing-indexers.md` covers all four.
+- **Runs in production** — slot-lag SLOs, Prometheus, PagerDuty, and
+  on-call playbooks for the 5 things that actually break.
 
 ## Quick start
 
@@ -334,49 +287,22 @@ above cover the *consuming* side.
 
 ## Extends the Solana AI Kit ecosystem
 
-This skill extends the
-[Solana AI Kit](https://github.com/solanabr/solana-ai-kit) by filling a
-gap nobody in the ecosystem is properly covering — *how to build* a
-Solana indexer. The kit ships Helius, QuickNode, light-protocol,
-solana-agent-kit, Jupiter, Metaplex, Anchor, Pinocchio, Token
-Extensions, security skills, infra skills, GTM skills. This is the
-indexer-builder skill that completes the picture.
+This skill fills a gap in the
+[Solana AI Kit](https://github.com/solanabr/solana-ai-kit) ecosystem
+— *how to build* a Solana indexer. The kit ships Helius, QuickNode,
+light-protocol, solana-agent-kit, Jupiter, Metaplex, Anchor,
+Pinocchio, Token Extensions, security skills, infra skills, GTM
+skills. This is the indexer-builder skill that completes the picture.
 
-The skill follows the kit's exact shape (`skill/` + `agents/` +
-`commands/` + `rules/` + `install.sh` + MIT LICENSE) so it can be
-added to `ext/solana-indexer` of the kit with no restructuring.
+It follows the kit's exact shape (`skill/` + `agents/` + `commands/`
++ `rules/` + `install.sh` + MIT LICENSE) so it can drop into
+`ext/solana-indexer` with no restructuring.
 
-## Part of solana-superchargers
-
-This is the first skill in
+It's also the first skill in
 [solana-superchargers](https://github.com/srivtx/solana-superchargers),
-a multi-skill marketplace that extends the Solana AI Kit. The
-marketplace ships a shared installer (`./install.sh add <skill>`) and
-planned skills across 13 categories:
-
-- **Indexers** — `solana-indexer` (this one)
-- **Observability** — `solana-observability-skill` (planned)
-- **MEV** — `solana-mev-skill` (planned: Jito bundles, MEV protection)
-- **Program upgrades** — `solana-upgrade-skill` (planned: data
-  migrations, schema changes, feature flags)
-- **E2E testing** — `solana-e2e-skill` (planned: Playwright + wallet,
-  Surfpool fork)
-- **Wallet UX** — `solana-wallet-ux-skill` (planned: signing UX, error
-  states, multi-wallet patterns)
-- **And 7 more** across DeFi depth, NFT indexing, GTM, security
-  audit, infra, dev tools, and analytics
-
-`solana-indexer` is the only fully-shipped skill today — the rest are
-in the roadmap. Install just this one with the one-liner above, or
-grab the marketplace and pick a subset:
-
-```bash
-git clone https://github.com/srivtx/solana-superchargers.git
-cd solana-superchargers
-./install.sh add solana-indexer
-# or
-./install.sh add all
-```
+a multi-skill marketplace extending the AI Kit with more skills
+(observability, MEV, upgrades, E2E testing, wallet UX, and more in
+the roadmap).
 
 ## License
 
