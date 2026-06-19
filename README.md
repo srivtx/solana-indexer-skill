@@ -158,54 +158,15 @@ Or just talk to it:
 
 | Skill | What it teaches | Builds indexers? |
 |---|---|---|
-| **solana-indexer (this)** | End-to-end indexer development: ingestion, schema, backfill, streaming, testing, ops | **Yes** |
-| `ext/helius` (Helius labs) | How to *use* Helius RPC, DAS, webhooks, enhanced transactions | No (consumer) |
-| `ext/sendai/skills/quicknode` (SendAI) | How to *use* QuickNode streams, RPC plans, marketplace add-ons | No (consumer) |
-| `ext/light-protocol` (Light Labs) | ZK state compression + Light Token indexing primitives | No (different problem) |
-| `ext/sendai/skills/solana-agent-kit` (SendAI) | AI agent actions: 60+ tools that *read* chain data | No (consumer) |
-| `ext/solana-dev` (Solana Foundation) | Program development: Anchor, Pinocchio, frontend, testing | No (program-focused) |
-| Solana AI Kit `backend-async.md` | One 20-line Axum polling pattern | No (snippet) |
+| **solana-indexer (this)** | End-to-end indexer development | **Yes** |
+| `ext/helius` | How to *use* Helius RPC, webhooks, enhanced tx | No (consumer) |
+| `ext/sendai/skills/quicknode` | How to *use* QuickNode streams | No (consumer) |
+| `ext/light-protocol` | ZK state compression + Light Token | No (different problem) |
+| `ext/sendai/skills/solana-agent-kit` | 60+ AI agent actions that *read* chain data | No (consumer) |
+| `ext/solana-dev` | Program development (Anchor, Pinocchio) | No (program-focused) |
+| Kit's `backend-async.md` | One 20-line polling snippet | No (snippet) |
 
-This is the only skill that covers *building* an indexer from first
-principles to production operations.
-
-## Compatibility
-
-### RPC providers (ingestion)
-| Provider | Webhook | WebSocket | Yellowstone gRPC | Notes |
-|---|---|---|---|---|
-| Helius | ✓ enhanced | ✓ | ✓ Laserstream | Default choice; verified pricing as of 2026 |
-| QuickNode | ✓ | ✓ | ✓ Streams | Marketplace add-ons for Solana-specific data |
-| Triton | — | — | ✓ | Lowest-latency gRPC, no free tier |
-| Syndica | ✓ | ✓ | — | Good WebSocket coverage, no gRPC |
-| Public mainnet | — | ✓ rate-limited | — | Devnet/test only |
-
-### Databases
-| DB | Version | Use case | Notes |
-|---|---|---|---|
-| Postgres | 16+ | Primary store, relational schemas | Default |
-| TimescaleDB | 2.x+ | Time-series (OHLCV, swap aggregations) | Hypertables + compression |
-| ClickHouse | 23.x+ | High-volume analytics | Optional for >1M events/min |
-| SQLite | 3.x+ | Local dev, single-process indexers | Limited concurrency |
-| DuckDB | 0.10+ | Embedded analytics over parquet | Read-only patterns |
-
-### Testing frameworks
-| Framework | Scope | Notes |
-|---|---|---|
-| LiteSVM | Unit | In-process Solana VM, fast |
-| Surfpool | Integration | Local validator + mainnet fork |
-| Mollusk | Unit (programs) | Minimal Solana program testing |
-| Trident | E2E (Anchor) | Anchor-specific fuzzing |
-| solana-test-validator | Local validator | Built-in, but slower than Surfpool |
-
-### Deployment
-| Target | Notes |
-|---|---|
-| Docker | Single-container, recommended for dev |
-| Kubernetes | Multi-replica, HPA on lag metrics |
-| Cloudflare Workers | Edge indexers (limited; no Postgres) |
-| Fly.io / Railway | Single-region, simple |
-| AWS / GCP | Full control, multi-region |
+This is the only skill that covers *building* an indexer end-to-end.
 
 ## Default stack (2026)
 
@@ -226,57 +187,27 @@ principles to production operations.
 ```
 solana-indexer-skill/
 ├── CLAUDE.md                 # system personality + routing
-├── README.md                 # this file
-├── CHANGELOG.md              # version history
-├── LICENSE                   # MIT
-├── TODO.md                   # roadmap
+├── README.md, CHANGELOG.md, TODO.md, LICENSE
 ├── install.sh                # self-contained installer
-├── .github/
-│   └── workflows/
-│       └── validate.yml      # 6-job CI
+├── .github/workflows/validate.yml   # 6-job CI
 ├── skill/
-│   ├── SKILL.md              # entry point (3.9 KB routing hub)
+│   ├── SKILL.md              # 3.9 KB routing hub
 │   ├── references/           # 9 verified reference files
-│   │   ├── indexer-architecture.md
-│   │   ├── geyser-plugins.md
-│   │   ├── postgres-schemas.md
-│   │   ├── backfill-strategies.md
-│   │   ├── real-time-streaming.md
-│   │   ├── cost-optimization.md
-│   │   ├── testing-indexers.md
-│   │   ├── production-ops.md
-│   │   └── resources.md
 │   └── examples/             # 3 working, tested examples
-│       ├── minimal-indexer-ts/        # 100-line TS indexer (Helius webhook → Postgres)
-│       ├── geyser-plugin/skeleton/    # Rust Geyser plugin skeleton
-│       └── subgraph-template/         # The Graph on Solana
-├── agents/
-│   ├── indexer-architect.md           # designs an indexer for a given dApp
-│   └── indexer-qa.md                  # tests indexer correctness
-├── commands/
-│   ├── build-indexer.md               # /build-indexer
-│   └── backfill-data.md               # /backfill
-├── rules/
-│   └── indexer-defaults.md            # auto-loads in /indexer folders
-└── assets/
-    └── indexer.webp                   # banner (transparent background)
+├── agents/                   # 2 (architect, qa)
+├── commands/                 # 2 (/build-indexer, /backfill)
+├── rules/                    # 1 (indexer-defaults)
+└── assets/indexer.webp       # banner
 ```
 
 ## Inspiration & related work
 
-This skill builds on (and is informed by) the work of:
-
-- **Helius** ([helius-labs/core-ai](https://github.com/helius-labs/core-ai)) — Yellowstone gRPC + DAS reference, SVM internals
-- **QuickNode** ([quiknode-labs/solana-anchor-claude-skill](https://github.com/quiknode-labs/solana-anchor-claude-skill)) — QuickNode streams
-- **Light Protocol** ([Lightprotocol/light-protocol](https://github.com/Lightprotocol/light-protocol)) — ZK compression, Light Token
-- **SendAI** ([sendaifun/skills](https://github.com/sendaifun/skills)) — Jupiter, Raydium, Drift, Kamino, Pyth integration
-- **Metaplex** ([metaplex-foundation/skill](https://github.com/metaplex-foundation/skill)) — Core, Token Metadata, Bubblegum
-- **Solana Foundation** ([solana-foundation/solana-dev-skill](https://github.com/solana-foundation/solana-dev-skill)) — core Solana dev reference
-- **Triton** — Yellowstone gRPC protocol
-- **rpcpool** — yellowstone-grpc reference implementation
-
-This skill fills the **building** side of the indexing story. The skills
-above cover the *consuming* side.
+Built on top of Helius, QuickNode, Light Protocol, SendAI, Metaplex,
+Solana Foundation, Triton, and rpcpool's work — see
+[`skill/references/resources.md`](skill/references/resources.md) for
+the full list of upstream repos. This skill fills the *building*
+side of the indexing story; the listed sources cover the *consuming*
+side.
 
 ## When NOT to use this skill
 
