@@ -29,9 +29,14 @@ warn() { printf "  \033[33m!\033[0m %s\n" "$*"; }
 err()  { printf "  \033[31m✗\033[0m %s\n" "$*" >&2; }
 head() { printf "\n\033[1m\033[36m── %s ──\033[0m\n" "$*"; }
 
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR=""
+if [[ -n "${BASH_SOURCE[0]:-}" ]]; then
+  SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+fi
 inside_repo=false
-[[ -f "${SCRIPT_DIR}/skill/SKILL.md" ]] && inside_repo=true
+if [[ -n "$SCRIPT_DIR" ]] && [[ -f "${SCRIPT_DIR}/skill/SKILL.md" ]]; then
+  inside_repo=true
+fi
 
 cmd="${1:-add}"
 shift || true
@@ -71,6 +76,7 @@ EOF
     else
       curl -fsSL "$REPO_TARBALL" -o "$TMP/repo.tgz"
       tar -xzf "$TMP/repo.tgz" -C "$TMP" --strip-components=1
+      rm -f "$TMP/repo.tgz"
     fi
     mkdir -p "$CLAUDE_SKILLS_HOME/$SKILL_NAME"
     cp -R "$TMP/." "$CLAUDE_SKILLS_HOME/$SKILL_NAME/"
