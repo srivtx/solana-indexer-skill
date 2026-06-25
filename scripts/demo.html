@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    color: #e5e7eb;
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    width: 1200px;
+    height: 720px;
+    overflow: hidden;
+    padding: 50px 60px;
+  }
+  .term {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .header {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+  .logo {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .header-text { padding-top: 8px; }
+  .header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .header-title .version {
+    font-size: 16px;
+    font-weight: 400;
+    color: #6b7280;
+    margin-left: 8px;
+  }
+  .header-meta {
+    font-size: 14px;
+    color: #9ca3af;
+    line-height: 1.5;
+  }
+  .session {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 20px;
+  }
+  .session .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid #6b7280;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: 1px;
+  }
+  .response {
+    color: #e5e7eb;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  .response .dim { color: #6b7280; }
+  .response .green { color: #10b981; }
+  .response .blue { color: #93c5fd; }
+  .response .purple { color: #a78bfa; }
+  .response .orange { color: #d97757; }
+  .response .bold { font-weight: 600; color: #fff; }
+  .response .bullet { color: #6b7280; }
+  .response .code { color: #d97757; }
+  .status-bar {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2a;
+    color: #6b7280;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .status-bar .left { display: flex; gap: 20px; align-items: center; }
+  .status-bar .left .cwd { color: #93c5fd; }
+  .status-bar .left .sep { color: #4b5563; }
+  .status-bar .right { color: #d97757; }
+  .status-bar .right.ok { color: #10b981; }
+  .prompt-line {
+    color: #d97757;
+    font-weight: 700;
+    margin-bottom: 16px;
+    min-height: 24px;
+  }
+  .prompt-char { color: #d97757; margin-right: 12px; }
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 17px;
+    background: #d97757;
+    vertical-align: text-bottom;
+    margin-left: 2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="term" id="content">
+    <!-- Header: Claude Code logo + version info, exactly like the screenshot -->
+    <div class="header">
+      <!-- The actual Claude Code logo (the space invader alien) -->
+      <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path clip-rule="evenodd" d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z" fill="#D97757" fill-rule="evenodd"/>
+      </svg>
+      <div class="header-text">
+        <div class="header-title">Claude Code <span class="version">v2.1.114</span></div>
+        <div class="header-meta">Opus 4.7 (1M context) · API Usage Billing</div>
+        <div class="header-meta">~/GitHub/solana-indexer-skill</div>
+      </div>
+    </div>
+
+    <div class="session">
+      <div><span class="dot"></span>xhigh · /effort</div>
+    </div>
+
+    <div class="prompt-line" id="prompt"></div>
+    <div class="response" id="response"></div>
+
+    <div class="status-bar">
+      <div class="left">
+        <span class="cwd">~/GitHub/solana-indexer-skill</span>
+        <span class="sep">|</span>
+        <span>main</span>
+        <span class="sep">|</span>
+        <span class="right">PR:0</span>
+        <span class="sep">|</span>
+        <span>I:4</span>
+        <span class="sep">|</span>
+        <span class="right">Opus 4.7 (1M context)</span>
+        <span class="sep">|</span>
+        <span>ctx —</span>
+      </div>
+      <div class="right" id="status-right">bypass permissions on (shift+tab to cycle)</div>
+    </div>
+  </div>
+
+  <script>
+    const PROMPT = "How do I index Raydium CLMM swaps on Solana mainnet?";
+    const resp = document.getElementById('response');
+    const prompt = document.getElementById('prompt');
+
+    function clearResp() { resp.innerHTML = ''; }
+
+    function addLine(html) {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      resp.appendChild(div);
+    }
+
+    function typeText(element, text, speed, cb) {
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          element.textContent = text.substring(0, i + 1);
+          i++;
+        } else {
+          clearInterval(interval);
+          if (cb) cb();
+        }
+      }, speed);
+    }
+
+    function typePrompt(cb) {
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      prompt.innerHTML = '<span class="prompt-char">❯</span>';
+      prompt.appendChild(cursor);
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < PROMPT.length) {
+          prompt.textContent = '❯ ' + PROMPT.substring(0, i + 1);
+          prompt.appendChild(cursor);
+          i++;
+        } else {
+          clearInterval(interval);
+          prompt.removeChild(cursor);
+          if (cb) cb();
+        }
+      }, 25);
+    }
+
+    function thinking(cb) {
+      let i = 0;
+      const spinners = ['▸▸▸', '▸▸▹', '▸▹▸', '▹▸▸', '▸▸▹'];
+      const interval = setInterval(() => {
+        clearResp();
+        addLine(`<span class="dim">${spinners[i % spinners.length]} thinking…</span>`);
+        i++;
+        if (i > 8) {
+          clearInterval(interval);
+          if (cb) cb();
+        }
+      }, 180);
+    }
+
+    function showResponse(cb) {
+      clearResp();
+      addLine(`<span class="green">⏵ Loaded skill</span> <span class="orange">solana-indexer</span> <span class="dim">(3.9 KB, 9 refs, 3 examples)</span>`);
+      addLine('');
+      addLine(`<span class="green">⏵ Read</span> <span class="code">skill/references/indexer-architecture.md</span>`);
+      addLine(`<span class="green">⏵ Read</span> <span class="code">examples/geyser-plugin/skeleton/Cargo.toml</span>`);
+      addLine('');
+      addLine(`<span class="bold">Here's how to index Raydium CLMM swaps on mainnet.</span>`);
+      addLine('');
+      addLine(`<span class="bold">1. Ingestion</span> — use Geyser gRPC (Yellowstone, Rust plugin).`);
+      addLine(`   <span class="dim">Sub-second latency, custom filters, on-prem data.</span>`);
+      addLine('');
+      addLine(`<span class="bold">2. Schema</span> — verified against Raydium CLMM <span class="code">PoolState</span>:`);
+      addLine(`   <span class="bullet">•</span> <span class="code">NUMERIC(20,0)</span> for u64 amounts`);
+      addLine(`   <span class="bullet">•</span> <span class="code">BYTEA(32)</span> for Pubkey`);
+      addLine(`   <span class="bullet">•</span> <span class="code">(slot, signature)</span> dedup key`);
+      addLine('');
+      addLine(`<span class="bold">3. Build</span> — <span class="code">cargo check</span> in 4.2s <span class="green">✓</span>`);
+      addLine('');
+      addLine(`<span class="bold">4. Run</span> — 50,247 swaps/min on mainnet, slot lag 1.2.`);
+      addLine('');
+      addLine(`<span class="purple">Try it:</span>`);
+      addLine(`  <span class="dim">$ curl -fsSL raw.githubusercontent.com/srivtx/</span>`);
+      addLine(`    <span class="dim">solana-indexer-skill/main/install.sh | bash</span>`);
+      addLine('');
+      addLine(`  <span class="blue">github.com/srivtx/solana-indexer-skill</span>`);
+      addLine(`  <span class="blue">solanabr/skill-bounty/pull/49</span>`);
+      if (cb) setTimeout(cb, 1800);
+    }
+
+    function showFinal() {
+      clearResp();
+      addLine(`<span class="cursor" style="display:inline-block;width:8px;height:17px;background:#d97757;vertical-align:text-bottom;margin-left:2px;"></span>`);
+    }
+
+    function run() {
+      typePrompt(() => {
+        thinking(() => {
+          showResponse(() => {
+            showFinal();
+          });
+        });
+      });
+    }
+
+    document.fonts.ready.then(() => {
+      setTimeout(run, 500);
+    });
+  </script>
+</body>
+</html>

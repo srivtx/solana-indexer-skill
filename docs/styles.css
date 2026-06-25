@@ -488,11 +488,21 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* FOOTER */
-.foot {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 48px 0 64px;
+/* DEMO */
+.demo-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  margin: 0 0 12px;
 }
+.demo-gif {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* FOOTER */
 .foot-inner {
   display: flex;
   justify-content: space-between;
