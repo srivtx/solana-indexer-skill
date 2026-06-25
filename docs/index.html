@@ -4,249 +4,150 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>solana-indexer — the missing piece of the Solana AI Kit</title>
-  <meta name="description" content="A Claude Code / Codex skill for building custom Solana indexers end-to-end. Geyser plugins, backfill, Postgres schemas, real-time streaming, production ops." />
+  <meta name="description" content="The first skill that teaches you how to build a Solana indexer from scratch. Geyser gRPC, backfill, Postgres, production ops." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Saira:wght@500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="grid-bg" aria-hidden="true"></div>
-  <div class="chaos" aria-hidden="true">
-    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(820, 180)">
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(0)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(45)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(90)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(135)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(180)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(225)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(270)"/>
-        <path d="M0 0 C 30 -50, 90 -60, 130 -20 C 160 10, 140 70, 90 90 C 50 105, 10 80, 0 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" transform="rotate(315)"/>
-      </g>
-      <path d="M-40 120 C 120 80, 220 220, 360 180 S 560 60, 720 140 S 920 320, 1100 260" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M-20 240 C 100 280, 260 160, 400 220 S 620 380, 800 300 S 1050 180, 1240 240" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.6"/>
-    </svg>
-  </div>
 
-  <main class="wrap">
+  <header class="nav">
+    <div class="container nav-row">
+      <a href="/" class="brand">
+        <span class="sol-mark" aria-hidden="true"></span>
+        <span class="brand-text">solana-indexer</span>
+      </a>
+      <nav class="nav-links">
+        <a href="https://github.com/srivtx/solana-indexer-skill" target="_blank" rel="noreferrer">repo</a>
+        <a href="https://github.com/solanabr/skill-bounty/pull/49" target="_blank" rel="noreferrer">bounty pr</a>
+      </nav>
+    </div>
+  </header>
 
-    <!-- HERO -->
+  <main class="container">
+
     <section class="hero">
-      <p class="kicker">solana-indexer &middot; a claude code / codex skill</p>
+      <p class="eyebrow">
+        <span class="dot"></span>
+        fills the <code>indexing-geyser</code> gap
+      </p>
       <h1 class="display">
-        The missing piece<br />
-        of the <span class="ink-soft">Solana AI Kit</span><span class="ink-faint">.</span>
+        Every Solana product<br />
+        runs on an indexer.
       </h1>
       <p class="lede">
-        The first skill that teaches you how to <em>build</em> a Solana indexer
-        from scratch &mdash; Geyser gRPC plugins, backfill, Postgres schemas,
-        real-time streaming, production ops. Not how to consume one.
+        Polling RPC is a tax. Rate limits are a ceiling. The AI Kit had skills for
+        <em>using</em> indexed data &mdash; nothing for <em>building</em> the thing
+        that produces it. This fills that gap. Geyser gRPC, backfill, Postgres,
+        production ops. With code that compiles.
       </p>
       <div class="cta-row">
-        <a class="btn primary" href="https://github.com/solanabr/skill-bounty/pull/49" target="_blank" rel="noreferrer">
-          View bounty PR
-        </a>
-        <a class="btn ghost" href="https://github.com/srivtx/solana-indexer-skill" target="_blank" rel="noreferrer">
-          Full repository
-        </a>
+        <a class="btn primary" href="https://github.com/solanabr/skill-bounty/pull/49" target="_blank" rel="noreferrer">View bounty PR &rarr;</a>
+        <a class="btn ghost" href="https://github.com/srivtx/solana-indexer-skill" target="_blank" rel="noreferrer">Full repository</a>
       </div>
     </section>
 
-    <!-- THE GAP -->
-    <section class="gap">
-      <p class="section-label">The gap</p>
-      <h2 class="h2">Fills an unsolved idea from the AI Kit&rsquo;s own Ideas table.</h2>
-      <p class="prose">
-        The Solana AI Kit&rsquo;s Ideas table in
-        <a href="https://github.com/solanabr/skills" target="_blank" rel="noreferrer">solanabr/skills</a>
-        lists <code>indexing-geyser</code> &mdash; <em>&ldquo;Geyser plugins and data indexing&rdquo;</em>
-        &mdash; as an unsolved gap with zero implementations.
-      </p>
-      <p class="prose">
-        No existing skill teaches how to <strong>build</strong> a Solana indexer.
-        Helius, QuickNode, and solana-agent-kit all teach how to <em>consume</em>
-        indexed data. Every serious Solana dApp &mdash; DeFi dashboards, NFT
-        marketplaces, gaming leaderboards, social graphs, analytics &mdash; needs
-        a custom indexer. Until now, every founder had to rediscover the same
-        patterns.
-      </p>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- THE DECISION TREE -->
-    <section class="tree">
-      <p class="section-label">The decision tree</p>
-      <h2 class="h2">Ask &ldquo;I need to index X&rdquo;. Get the right path.</h2>
-      <p class="prose">
-        <code>indexer-architecture.md</code> is the front door. Five viable
-        ingestion methods, each with different tradeoffs on cost, latency,
-        complexity, and what you can do.
-      </p>
-      <div class="tree-grid">
-        <div class="tree-col">
-          <h3 class="tree-title">Geyser gRPC</h3>
-          <p class="tree-meta">Rust &middot; high-volume &middot; &lt;100ms</p>
-          <p class="tree-body">Custom filtering, on-prem data. Best for high-throughput indexers.</p>
+    <section class="strip">
+      <div class="strip-grid">
+        <div class="strip-cell">
+          <p class="strip-num"><code>tsc</code></p>
+          <p class="strip-label">TS example</p>
         </div>
-        <div class="tree-col">
-          <h3 class="tree-title">Enhanced WebSocket</h3>
-          <p class="tree-meta">TS / JS &middot; most dApps &middot; 200-500ms</p>
-          <p class="tree-body">Helius or QuickNode. The default choice for most teams.</p>
+        <div class="strip-cell">
+          <p class="strip-num"><code>cargo</code></p>
+          <p class="strip-label">Rust example</p>
         </div>
-        <div class="tree-col">
-          <h3 class="tree-title">Webhooks</h3>
-          <p class="tree-meta">Any lang &middot; event-driven &middot; 1-5s</p>
-          <p class="tree-body">Helius or QuickNode webhooks. Low-throughput, simple.</p>
+        <div class="strip-cell">
+          <p class="strip-num">9 / 9</p>
+          <p class="strip-label">refs resolve</p>
         </div>
-        <div class="tree-col">
-          <h3 class="tree-title">Polling</h3>
-          <p class="tree-meta">Any lang &middot; cold start &middot; 5-30s</p>
-          <p class="tree-body"><code>getSignaturesForAddress</code>. Simple backfill, expensive at scale.</p>
+        <div class="strip-cell">
+          <p class="strip-num">6</p>
+          <p class="strip-label">CI jobs</p>
         </div>
-        <div class="tree-col">
-          <h3 class="tree-title">Subgraph</h3>
-          <p class="tree-meta">GraphQL &middot; public data &middot; 30s-2m</p>
-          <p class="tree-body">The Graph on Solana. Queryable GraphQL, lowest complexity.</p>
+        <div class="strip-cell">
+          <p class="strip-num">35</p>
+          <p class="strip-label">files, MIT</p>
         </div>
       </div>
     </section>
 
-    <hr class="rule" />
-
-    <!-- VERIFICATION -->
-    <section class="verify">
-      <p class="section-label">Verification</p>
-      <h2 class="h2">Tested, not claimed.</h2>
-      <table class="vtable">
-        <tbody>
-          <tr><td>TypeScript example typecheck</td><td><code>tsc --noEmit</code></td><td class="pass">PASS</td></tr>
-          <tr><td>Rust example typecheck</td><td><code>cargo check</code></td><td class="pass">PASS</td></tr>
-          <tr><td>SKILL.md link integrity</td><td>9 references</td><td class="pass">9/9 resolve</td></tr>
-          <tr><td>Postgres schemas verified</td><td>vs Raydium CLMM <code>PoolState</code> source</td><td class="pass">verified</td></tr>
-          <tr><td>All 9 refs cross-checked</td><td>vs real SDK + official docs</td><td class="pass">verified</td></tr>
-          <tr><td>Standalone repo CI</td><td>6 jobs</td><td class="pass">passing</td></tr>
-          <tr><td>Dedup key patterns</td><td><code>(slot, signature)</code>, <code>(pubkey, slot)</code></td><td class="pass">verified</td></tr>
-        </tbody>
-      </table>
+    <section class="block">
+      <h2 class="h2">The problem</h2>
+      <p class="prose">
+        Every serious Solana dApp &mdash; DeFi dashboards, NFT marketplaces, gaming
+        leaderboards, social graphs, analytics &mdash; needs a custom indexer. The
+        AI Kit had Helius, QuickNode, and solana-agent-kit skills for
+        <em>consuming</em> indexed data. Nothing for <em>building</em> one. Every
+        founder had to rediscover the same patterns.
+      </p>
     </section>
 
-    <hr class="rule" />
+    <section class="block">
+      <h2 class="h2">What works out of the box</h2>
+      <div class="features">
+        <div class="feature">
+          <h3 class="feature-h">9 reference docs</h3>
+          <p class="feature-body">indexer-architecture, geyser-plugins, postgres-schemas, backfill-strategies, real-time-streaming, cost-optimization, testing-indexers, production-ops, resources.</p>
+        </div>
+        <div class="feature">
+          <h3 class="feature-h">3 runnable examples</h3>
+          <p class="feature-body">minimal-indexer-ts (Helius webhook &rarr; Postgres), geyser-plugin/skeleton (Rust), subgraph-template. All type-checked.</p>
+        </div>
+        <div class="feature">
+          <h3 class="feature-h">2 agents + 2 commands</h3>
+          <p class="feature-body">indexer-architect, indexer-qa, <code>/build-indexer</code>, <code>/backfill</code>. 1 rule auto-loads in <code>/indexer</code> folders.</p>
+        </div>
+        <div class="feature">
+          <h3 class="feature-h">Progressive loading</h3>
+          <p class="feature-body">SKILL.md is 3.9 KB. References load only when the agent needs them. Idle context cost: &lt;4 KB.</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- INSTALL -->
-    <section class="install">
-      <p class="section-label">Install</p>
-      <h2 class="h2">One line. Two minutes.</h2>
-      <pre class="codeblock"><code><span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/install.sh | bash</code></pre>
-      <p class="prose small">
+    <section class="block install">
+      <h2 class="h2">Install</h2>
+      <div class="code-wrap">
+        <button class="copy-btn" type="button" data-copy-target="install-cmd" aria-label="Copy install command">
+          <span class="copy-label">Copy</span>
+        </button>
+        <pre class="codeblock"><code id="install-cmd"><span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/srivtx/solana-indexer-skill/main/install.sh | bash</code></pre>
+      </div>
+      <p class="install-note">
         Installs to <code>~/.claude/skills/solana-indexer/</code>
-        (and <code>~/.codex/skills/solana-indexer/</code> if Codex is installed).
-        Restart Claude Code or Codex.
+        (and <code>~/.codex/</code> if installed). Restart Claude Code or Codex.
       </p>
     </section>
 
-    <hr class="rule" />
-
-    <!-- WHAT'S INSIDE -->
-    <section class="inside">
-      <p class="section-label">What&rsquo;s inside</p>
-      <h2 class="h2">35 files. Nine references. Three runnable examples.</h2>
-      <div class="inside-grid">
-        <div>
-          <h3 class="inside-h">References (9)</h3>
-          <ul class="list">
-            <li>indexer-architecture &middot; decision tree</li>
-            <li>geyser-plugins &middot; Rust Geyser authoring</li>
-            <li>postgres-schemas &middot; NUMERIC(40,0), BYTEA(32)</li>
-            <li>backfill-strategies &middot; 5 strategies + checkpoints</li>
-            <li>real-time-streaming &middot; WebSocket + gRPC patterns</li>
-            <li>cost-optimization &middot; Helius tiers + 7 techniques</li>
-            <li>testing-indexers &middot; LiteSVM + Surfpool + golden</li>
-            <li>production-ops &middot; slot lag SLOs, PagerDuty</li>
-            <li>resources &middot; official docs index</li>
-          </ul>
+    <footer class="foot">
+      <div class="foot-inner">
+        <div class="foot-left">
+          <p>MIT &middot; matches <code>solana-game-skill</code> shape &middot; merge or submodule ready</p>
+          <p class="foot-meta">Built by <a href="https://github.com/srivtx" target="_blank" rel="noreferrer">@srivtx</a> for the <a href="https://earn.superteam.fun" target="_blank" rel="noreferrer">Superteam Brasil</a> <em>Ship useful agent skills</em> bounty</p>
         </div>
-        <div>
-          <h3 class="inside-h">Examples (3, type-checked)</h3>
-          <ul class="list">
-            <li>minimal-indexer-ts &middot; Helius webhook &rarr; Postgres</li>
-            <li>geyser-plugin/skeleton &middot; Rust Geyser skeleton</li>
-            <li>subgraph-template &middot; The Graph on Solana</li>
-          </ul>
-          <h3 class="inside-h">Agents (2)</h3>
-          <ul class="list">
-            <li>indexer-architect &middot; designs for a dApp</li>
-            <li>indexer-qa &middot; tests for correctness</li>
-          </ul>
-          <h3 class="inside-h">Commands (2)</h3>
-          <ul class="list">
-            <li>/build-indexer &middot; scaffold from spec</li>
-            <li>/backfill &middot; backfill with checkpoints</li>
-          </ul>
-          <h3 class="inside-h">Rules (1)</h3>
-          <ul class="list">
-            <li>indexer-defaults &middot; auto-loads in <code>/indexer</code></li>
-          </ul>
+        <div class="foot-right">
+          <a href="https://github.com/solanabr/skill-bounty/pull/49" target="_blank" rel="noreferrer" class="btn small primary">bounty pr</a>
+          <a href="https://github.com/srivtx/solana-indexer-skill" target="_blank" rel="noreferrer" class="btn small ghost">repo</a>
         </div>
       </div>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- LIFECYCLE -->
-    <section class="lifecycle">
-      <p class="section-label">Build + operate</p>
-      <h2 class="h2">The full lifecycle, not just one moment.</h2>
-      <table class="ltable">
-        <thead>
-          <tr><th>Phase</th><th>Reference</th><th>Example</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Decide</td><td>indexer-architecture</td><td>&mdash;</td></tr>
-          <tr><td>Build</td><td>geyser-plugins, postgres-schemas</td><td>minimal-indexer-ts, geyser-plugin, subgraph</td></tr>
-          <tr><td>Backfill</td><td>backfill-strategies</td><td>&mdash;</td></tr>
-          <tr><td>Run</td><td>real-time-streaming, production-ops</td><td>&mdash;</td></tr>
-          <tr><td>Optimize</td><td>cost-optimization</td><td>&mdash;</td></tr>
-          <tr><td>Test</td><td>testing-indexers</td><td>&mdash;</td></tr>
-        </tbody>
-      </table>
-      <p class="prose small">
-        No other skill in the kit covers the full lifecycle from picking an
-        ingestion method through operating the indexer in production.
-      </p>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- COMPOSITION -->
-    <section class="compose">
-      <p class="section-label">Where it fits</p>
-      <h2 class="h2">Composes with the kit. Does not duplicate.</h2>
-      <ul class="compose-list">
-        <li><code>ext/helius</code> &middot; for <em>using</em> Helius APIs inside the indexer</li>
-        <li><code>ext/sendai/skills/quicknode</code> &middot; for QuickNode streams</li>
-        <li><code>ext/solana-dev</code> &middot; for general Solana program patterns</li>
-        <li><code>ext/cloudflare</code> &middot; for deploying the indexer on Workers</li>
-        <li><code>ext/trailofbits</code> &middot; if the indexer handles sensitive data</li>
-      </ul>
-    </section>
-
-    <hr class="rule" />
-
-    <!-- FOOTER -->
-    <footer class="foot">
-      <p class="foot-line">
-        Built by <a href="https://github.com/srivtx" target="_blank" rel="noreferrer">@srivtx</a>
-        as part of the
-        <a href="https://earn.superteam.fun" target="_blank" rel="noreferrer">Superteam Brasil</a>
-        <em>Ship useful agent skills</em> bounty.
-      </p>
-      <p class="foot-meta">
-        MIT licensed &middot; matches <code>solana-game-skill</code> shape &middot; merge or submodule ready
-      </p>
     </footer>
 
   </main>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var targetId = btn.getAttribute('data-copy-target');
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        var text = el.textContent.replace(/^\$\s*/, '').trim();
+        navigator.clipboard.writeText(text).then(function () {
+          btn.classList.add('copied');
+          setTimeout(function () { btn.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
